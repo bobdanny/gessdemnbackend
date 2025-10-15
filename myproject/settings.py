@@ -3,14 +3,18 @@ from pathlib import Path
 import dj_database_url
 from dotenv import load_dotenv
 
+load_dotenv()
+
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-SECRET_KEY = 'django-insecure-kh5!x9253n9+u9)&^23o1sh6d1xm33170tmm78y$mugpxo($-6'
+SECRET_KEY = os.environ.get(
+    'DJANGO_SECRET_KEY',
+    'django-insecure-kh5!x9253n9+u9)&^23o1sh6d1xm33170tmm78y$mugpxo($-6'
+)
 
 DEBUG = True
 
 ALLOWED_HOSTS = ['gessdemnapi.onrender.com', '127.0.0.1', 'localhost']
-
 
 LOGIN_URL = '/gessdemn/login/'
 
@@ -21,10 +25,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'gessdemn',
-    'django.contrib.humanize',
     'rest_framework',
     'corsheaders',
+    'gessdemn',
+    'django.contrib.humanize',
 ]
 
 AUTH_USER_MODEL = 'gessdemn.CustomUser'
@@ -32,15 +36,13 @@ AUTH_USER_MODEL = 'gessdemn.CustomUser'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'myproject.urls'
@@ -65,7 +67,9 @@ WSGI_APPLICATION = 'myproject.wsgi.application'
 
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}"
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600,
+        ssl_require=True,
     )
 }
 
@@ -86,11 +90,8 @@ STATIC_ROOT = BASE_DIR / 'staticfiles'
 STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-
-SITE_URL = "http://gessdemn.onrender.com/"
-
+SITE_URL = "https://gessdemnapi.onrender.com/"
 
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 CORS_ALLOW_ALL_ORIGINS = True
-
