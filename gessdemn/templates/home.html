@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Issues</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 2rem; background: #111; color: #eee; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 0.5rem; border: 1px solid #444; text-align: left; }
+        th { background: #222; }
+        tr:nth-child(even) { background: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <h1>All Issues in Database</h1>
+
+    {% if issues %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Issue</th>
+                <th>Priority</th>
+                <th>AI Suggestion</th>
+                <th>Submitted At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for issue in issues %}
+            <tr>
+                <td>{{ issue.id }}</td>
+                <td>{{ issue.name }}</td>
+                <td>{{ issue.email }}</td>
+                <td>{{ issue.issue }}</td>
+                <td>{{ issue.priority|default:"Pending" }}</td>
+                <td>{{ issue.ai_suggestion|default:"-" }}</td>
+                <td>{{ issue.submitted_at }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+        <p>No issues found in the database.</p>
+    {% endif %}
+</body>
+</html>
