@@ -66,3 +66,18 @@ class HomeView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['issues'] = Issue.objects.all().order_by('-submitted_at')
         return context
+
+
+    
+from django.views.decorators.http import require_http_methods
+from django.shortcuts import get_object_or_404
+
+@csrf_exempt
+@require_http_methods(["DELETE"])
+def delete_issue(request, issue_id):
+    try:
+        issue = get_object_or_404(Issue, id=issue_id)
+        issue.delete()
+        return JsonResponse({'status': 'success', 'message': 'Issue deleted successfully'})
+    except Exception as e:
+        return JsonResponse({'status': 'error', 'message': str(e)}, status=400)

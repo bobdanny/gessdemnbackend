@@ -9,6 +9,8 @@
         th, td { padding: 0.5rem; border: 1px solid #444; text-align: left; }
         th { background: #222; }
         tr:nth-child(even) { background: #1a1a1a; }
+        button { background: #c0392b; color: white; border: none; padding: 5px 10px; cursor: pointer; }
+        button:hover { background: #e74c3c; }
     </style>
 </head>
 <body>
@@ -25,11 +27,12 @@
                 <th>Priority</th>
                 <th>AI Suggestion</th>
                 <th>Submitted At</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
             {% for issue in issues %}
-            <tr>
+            <tr id="row-{{ issue.id }}">
                 <td>{{ issue.id }}</td>
                 <td>{{ issue.name }}</td>
                 <td>{{ issue.email }}</td>
@@ -37,6 +40,9 @@
                 <td>{{ issue.priority|default:"Pending" }}</td>
                 <td>{{ issue.ai_suggestion|default:"-" }}</td>
                 <td>{{ issue.submitted_at }}</td>
+                <td>
+                    <button onclick="deleteIssue({{ issue.id }})">Delete</button>
+                </td>
             </tr>
             {% endfor %}
         </tbody>
@@ -44,5 +50,42 @@
     {% else %}
         <p>No issues found in the database.</p>
     {% endif %}
+
+    <script>
+        function deleteIssue(issueId) {
+            if (confirm("Are you sure you want to delete this issue?")) {
+                fetch(`/delete-issue/${issueId}/`, {
+                    method: 'DELETE',
+                    headers: {
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'success') {
+                        document.getElementById(`row-${issueId}`).remove();
+                    } else {
+                        alert(data.message);
+                    }
+                });
+            }
+        }
+
+        // Get CSRF token helper
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+    </script>
 </body>
 </html>
