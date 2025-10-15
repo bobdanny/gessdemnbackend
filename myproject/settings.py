@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['gessdemnapi.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['gessdemnbackend.onrender.com', '127.0.0.1', 'localhost']
 
 LOGIN_URL = '/gessdemn/login/'
 
