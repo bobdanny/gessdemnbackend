@@ -9,7 +9,7 @@ SECRET_KEY = 'django-insecure-kh5!x9253n9+u9)&^23o1sh6d1xm33170tmm78y$mugpxo($-6
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['gessdemn.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['gessdemnapi.onrender.com', '127.0.0.1', 'localhost']
 
 
 LOGIN_URL = '/gessdemn/login/'
