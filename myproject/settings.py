@@ -14,7 +14,7 @@ SECRET_KEY = os.environ.get(
 
 DEBUG = True
 
-ALLOWED_HOSTS = ['gessdemnbackend.onrender.com', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['gessdemnbackend.onrender.com', '127.0.0.1', '10.173.5.199', 'localhost']
 
 LOGIN_URL = '/gessdemn/login/'
 
@@ -95,3 +95,4 @@ SITE_URL = "https://gessdemnapi.onrender.com/"
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 CORS_ALLOW_ALL_ORIGINS = True
+  

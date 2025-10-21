@@ -81,3 +81,71 @@ def delete_issue(request, issue_id):
         return JsonResponse({'status': 'success', 'message': 'Issue deleted successfully'})
     except Exception as e:
         return JsonResponse({'status': 'error', 'message': str(e)}, status=400)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+from .chatbot_tasks import chat_with_ai
+
+@csrf_exempt
+def chat_endpoint(request):
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            user_message = data.get("message", "")
+            if not user_message:
+                return JsonResponse({"status": "error", "message": "Message cannot be empty"}, status=400)
+
+            ai_response = chat_with_ai(user_message)
+            return JsonResponse({"status": "success", "reply": ai_response}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+
+    return JsonResponse({"status": "error", "message": "Only POST method allowed"}, status=405)
+
+
+
+
+
+
+
+
+
+from django.shortcuts import render
+from .chatbot_tasks import chat_with_ai
+from django.views.decorators.csrf import csrf_exempt
+
+@csrf_exempt
+def chat_view(request):
+    """
+    Renders a simple HTML page for chatting with the AI.
+    Handles user input and displays AI response.
+    """
+    ai_reply = ""
+    user_message = ""
+
+    if request.method == "POST":
+        user_message = request.POST.get("message", "")
+        if user_message:
+            ai_reply = chat_with_ai(user_message)
+
+    return render(request, "chat.html", {
+        "user_message": user_message,
+        "ai_reply": ai_reply
+    })
