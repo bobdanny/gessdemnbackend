@@ -7,9 +7,12 @@ def chat_with_ai(user_message):
     """
     Indeyx AI Assistant
     - Aware of Indeyx branding and services (indeyx.agency)
+    - Always uses indeyx.agency, never indeyx.com
     - Responds naturally to inquiries about Indeyx or its services
-    - Offers human-like support guidance for potential clients
     """
+
+    # Ensure user message replaces indeyx.com with indeyx.agency if present
+    user_message = user_message.replace("indeyx.com", "indeyx.agency")
 
     # Keywords that trigger "who built you" replies
     trigger_keywords = ["who built you", "who created you", "who made you"]
@@ -77,8 +80,11 @@ We’ve served 2000+ satisfied customers across industries globally.
             messages=[
                 {
                     "role": "system",
-                    "content": f"You are a friendly and professional AI assistant representing Indeyx Agency. "
-                               f"If asked about Indeyx or its services, answer accurately using this context: {indeyx_context}"
+                    "content": (
+                        "You are a friendly and professional AI assistant representing Indeyx Agency. "
+                        "Always use indeyx.agency instead of indeyx.com. "
+                        f"If asked about Indeyx or its services, answer accurately using this context: {indeyx_context}"
+                    )
                 },
                 {"role": "user", "content": context_message},
             ],
@@ -87,6 +93,8 @@ We’ve served 2000+ satisfied customers across industries globally.
         )
 
         ai_reply = response.choices[0].message.content.strip()
+        # Ensure output never mentions indeyx.com
+        ai_reply = ai_reply.replace("indeyx.com", "indeyx.agency")
         return ai_reply
 
     except Exception as e:

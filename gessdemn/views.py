@@ -149,3 +149,47 @@ def chat_view(request):
         "user_message": user_message,
         "ai_reply": ai_reply
     })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# views.py
+from django.views.decorators.csrf import csrf_exempt
+from django.http import JsonResponse
+import json
+from .chat import chat_with_cromtek  # <-- import your AI logic
+
+@csrf_exempt
+def cromtek_chat_api(request):
+    """
+    API endpoint for Cromtek AI chat.
+    Accepts POST requests with a JSON body: { "message": "user message" }
+    Returns JSON: { "status": "success", "reply": "AI response" }
+    """
+    if request.method == "POST":
+        try:
+            data = json.loads(request.body)
+            user_message = data.get("message", "").strip()
+            if not user_message:
+                return JsonResponse({"status": "error", "message": "Message cannot be empty"}, status=400)
+
+            ai_response = chat_with_cromtek(user_message)
+            return JsonResponse({"status": "success", "reply": ai_response}, status=200)
+
+        except json.JSONDecodeError:
+            return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
+
+    return JsonResponse({"status": "error", "message": "Only POST method allowed"}, status=405)

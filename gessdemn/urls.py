@@ -6,7 +6,8 @@ from gessdemn.views import (
     delete_issue,
     HomeView,
     chat_view,         # 👈 added
-    chat_endpoint,     # 👈 added (for API use)
+    chat_endpoint,  
+    cromtek_chat_api,   # 👈 added (for API use)
 )
 
 urlpatterns = [
@@ -17,6 +18,7 @@ urlpatterns = [
     path('delete-issue/<int:issue_id>/', delete_issue, name='delete_issue'),
 
     # 👇 New chatbot routes
-    path('chat/', chat_view, name='chat'),                 # For HTML chat page
-    path('chatapi/', chat_endpoint, name='chat_endpoint'), # Optional JSON chat API
+    path('chat/', chat_view, name='chat'),                 
+    path('chatapi/', chat_endpoint, name='chat_endpoint'), 
+    path('cromtek_chat_api/',  cromtek_chat_api, name=' cromtek_chat_api'), 
 ]
