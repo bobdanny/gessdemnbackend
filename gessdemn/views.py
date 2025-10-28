@@ -193,3 +193,56 @@ def cromtek_chat_api(request):
             return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
 
     return JsonResponse({"status": "error", "message": "Only POST method allowed"}, status=405)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.decorators import api_view
+from .models import FCMToken
+
+@api_view(['POST'])
+def save_fcm_token(request):
+    token = request.data.get('token')
+    device_name = request.data.get('device_name', 'Unknown')
+
+    if not token:
+        return Response({'error': 'Token is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+    obj, created = FCMToken.objects.get_or_create(token=token, defaults={'device_name': device_name})
+    if not created:
+        obj.device_name = device_name
+        obj.save()
+
+    return Response({'message': 'Token saved successfully!'}, status=status.HTTP_200_OK)
+
+
+
+
+
+
+from django.shortcuts import render
+from django.core.paginator import Paginator
+from .models import FCMToken
+
+def token_list(request):
+    qs = FCMToken.objects.order_by('-created_at')
+    paginator = Paginator(qs, 20)  # 20 tokens per page
+    page_number = request.GET.get('page', 1)
+    page_obj = paginator.get_page(page_number)
+    return render(request, 'token_list.html', {'page_obj': page_obj})

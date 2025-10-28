@@ -5,9 +5,11 @@ from gessdemn.views import (
     display_issues,
     delete_issue,
     HomeView,
-    chat_view,         # 👈 added
+    chat_view,         
     chat_endpoint,  
-    cromtek_chat_api,   # 👈 added (for API use)
+    cromtek_chat_api,  
+    save_fcm_token,
+    token_list,
 )
 
 urlpatterns = [
@@ -21,4 +23,6 @@ urlpatterns = [
     path('chat/', chat_view, name='chat'),                 
     path('chatapi/', chat_endpoint, name='chat_endpoint'), 
     path('cromtek_chat_api/',  cromtek_chat_api, name=' cromtek_chat_api'), 
+    path('save-fcm/', save_fcm_token, name='save-fcm'),
+    path('tokens/', token_list, name='fcm-tokens'),
 ]

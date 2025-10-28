@@ -66,3 +66,18 @@ class Issue(models.Model):
     def __str__(self):
         return f"{self.name} - {self.issue[:50]}"
 
+
+
+
+
+
+
+from django.db import models
+
+class FCMToken(models.Model):
+    token = models.TextField(unique=True)
+    device_name = models.CharField(max_length=100, blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.device_name or self.token[:20]
