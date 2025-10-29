@@ -96,14 +96,14 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 CORS_ALLOW_ALL_ORIGINS = True
   
-
-# === Firebase Credentials ===
-import json
+import os, json
 
 FIREBASE_CREDENTIALS = None
 firebase_env = os.environ.get("FIREBASE_CREDENTIALS")
 
 if firebase_env:
+    # 👇 Convert escaped newlines into real newlines
+    firebase_env = firebase_env.replace('\\n', '\n')
     try:
         FIREBASE_CREDENTIALS = json.loads(firebase_env)
     except json.JSONDecodeError:
