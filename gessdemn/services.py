@@ -4,13 +4,20 @@ import requests
 from django.conf import settings
 from google.oauth2 import service_account
 import google.auth.transport.requests
-from .models import FCMToken  # Import your model
+from .models import FCMToken
 
 
 def send_latest_feed_notification():
+    """Fetch latest feed and send notifications to all registered FCM tokens."""
+
     # 1️⃣ Fetch the latest feed
     feed_api = "https://cyberpedia-api-d7x0.onrender.com/notifications/feeds/latest"
-    res = requests.get(feed_api)
+    try:
+        res = requests.get(feed_api, timeout=10)
+    except Exception as e:
+        print(f"❌ Error fetching feed: {e}")
+        return
+
     if res.status_code != 200:
         print("❌ Failed to fetch latest feed:", res.status_code)
         return
@@ -18,7 +25,7 @@ def send_latest_feed_notification():
     feed = res.json()
     print("✅ Latest feed fetched:", feed.get("title", "No Title"))
 
-    # 2️⃣ Load Firebase credentials from settings
+    # 2️⃣ Load Firebase credentials from environment
     if not settings.FIREBASE_CREDENTIALS:
         print("⚠️ FIREBASE_CREDENTIALS not found in settings.")
         return
@@ -30,26 +37,24 @@ def send_latest_feed_notification():
             settings.FIREBASE_CREDENTIALS,
             scopes=SCOPES
         )
+        request = google.auth.transport.requests.Request()
+        credentials.refresh(request)
+        access_token = credentials.token
     except Exception as e:
-        print("❌ Error loading Firebase credentials:", e)
+        print("❌ Error initializing Firebase credentials:", e)
         return
 
-    request = google.auth.transport.requests.Request()
-    credentials.refresh(request)
-    access_token = credentials.token
-
-    # 3️⃣ Firebase project ID (read dynamically from credentials)
+    # 3️⃣ Firebase project ID
     project_id = settings.FIREBASE_CREDENTIALS.get("project_id", "cyberpediawithflutter")
 
-    # 4️⃣ FCM endpoint
+    # 4️⃣ Firebase Cloud Messaging endpoint
     url = f"https://fcm.googleapis.com/v1/projects/{project_id}/messages:send"
-
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Content-Type": "application/json; UTF-8",
     }
 
-    # 5️⃣ Fetch all tokens from the database
+    # 5️⃣ Retrieve FCM tokens
     tokens = list(FCMToken.objects.values_list('token', flat=True))
     if not tokens:
         print("⚠️ No FCM tokens found in the database.")
@@ -84,9 +89,12 @@ def send_latest_feed_notification():
             }
         }
 
-        response = requests.post(url, headers=headers, data=json.dumps(body))
-        print(f"🔔 Sent to {target_token[:8]}... | Status: {response.status_code}")
-        if response.status_code != 200:
-            print("⚠️ Response:", response.text)
+        try:
+            response = requests.post(url, headers=headers, data=json.dumps(body), timeout=10)
+            print(f"🔔 Sent to {target_token[:8]}... | Status: {response.status_code}")
+            if response.status_code != 200:
+                print("⚠️ Response:", response.text)
+        except Exception as e:
+            print(f"❌ Error sending to token {target_token[:8]}...: {e}")
 
     print("✅ Notification broadcast complete!")
