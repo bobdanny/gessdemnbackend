@@ -10,6 +10,7 @@ from gessdemn.views import (
     cromtek_chat_api,  
     save_fcm_token,
     token_list,
+    trigger_feed_notification,
 )
 
 urlpatterns = [
@@ -25,4 +26,6 @@ urlpatterns = [
     path('cromtek_chat_api/',  cromtek_chat_api, name=' cromtek_chat_api'), 
     path('save-fcm/', save_fcm_token, name='save-fcm'),
     path('tokens/', token_list, name='fcm-tokens'),
+
+    path('trigger/', trigger_feed_notification, name='trigger_feed_notification'),
 ]

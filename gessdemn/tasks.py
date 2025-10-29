@@ -58,3 +58,22 @@ Suggestion: <Your natural human-like reply>
         print(f"Issue ID {issue_id} does not exist.")
     except Exception as e:
         print(f"Error processing issue ID {issue_id}: {e}")
+
+
+
+
+
+
+
+
+
+
+
+from apscheduler.schedulers.background import BackgroundScheduler
+from .services import send_latest_feed_notification
+
+def start_scheduler():
+    scheduler = BackgroundScheduler()
+    scheduler.add_job(send_latest_feed_notification, 'interval', seconds=30)
+    scheduler.start()
+    print("⏱️ Scheduler started: sending feed notifications every 30s")

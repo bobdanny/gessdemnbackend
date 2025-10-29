@@ -246,3 +246,20 @@ def token_list(request):
     page_number = request.GET.get('page', 1)
     page_obj = paginator.get_page(page_number)
     return render(request, 'token_list.html', {'page_obj': page_obj})
+
+
+
+
+
+
+
+
+
+
+
+from django.http import JsonResponse
+from .services import send_latest_feed_notification
+
+def trigger_feed_notification(request):
+    send_latest_feed_notification()
+    return JsonResponse({"message": "Notification sent manually!"})

@@ -96,3 +96,15 @@ OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 
 CORS_ALLOW_ALL_ORIGINS = True
   
+
+# === Firebase Credentials ===
+import json
+
+FIREBASE_CREDENTIALS = None
+firebase_env = os.environ.get("FIREBASE_CREDENTIALS")
+
+if firebase_env:
+    try:
+        FIREBASE_CREDENTIALS = json.loads(firebase_env)
+    except json.JSONDecodeError:
+        print("⚠️ Could not parse FIREBASE_CREDENTIALS from environment.")
