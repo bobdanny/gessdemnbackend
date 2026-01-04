@@ -11,6 +11,7 @@ from gessdemn.views import (
     save_fcm_token,
     token_list,
     trigger_feed_notification,
+    gizmotize,
 )
 
 urlpatterns = [
@@ -28,4 +29,8 @@ urlpatterns = [
     path('tokens/', token_list, name='fcm-tokens'),
 
     path('trigger/', trigger_feed_notification, name='trigger_feed_notification'),
+
+
+    path('gizmotize/', gizmotize, name='gizmotize'),
+    
 ]
