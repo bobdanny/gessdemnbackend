@@ -5,10 +5,6 @@ from gessdemn.views import (
     display_issues,
     delete_issue,
     HomeView,
-    chat_view,         
-    chat_endpoint,  
-    cromtek_chat_api,  
-
     gizmotize,
 )
 
@@ -19,11 +15,7 @@ urlpatterns = [
     path('display-issues/', display_issues, name='display_issues'),  
     path('delete-issue/<int:issue_id>/', delete_issue, name='delete_issue'),
 
-    # 👇 New chatbot routes
-    path('chat/', chat_view, name='chat'),                 
-    path('chatapi/', chat_endpoint, name='chat_endpoint'), 
-    path('cromtek_chat_api/',  cromtek_chat_api, name=' cromtek_chat_api'), 
-
+   
 
     path('gizmotize/', gizmotize, name='gizmotize'),
     
