@@ -158,19 +158,13 @@ def chat_view(request):
 
 
 
-
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
-from .gizmotize import gizmotize
+from .gizmotize import gizmotize as chat_with_gizmotize  # <--- fix here
 
 @csrf_exempt
 def gizmotize(request):
-    """
-    API endpoint for gizmotize AI chat.
-    Accepts POST requests with a JSON body: { "message": "user message" }
-    Returns JSON: { "status": "success", "reply": "AI response" }
-    """
     if request.method == "POST":
         try:
             data = json.loads(request.body)
@@ -178,15 +172,13 @@ def gizmotize(request):
             if not user_message:
                 return JsonResponse({"status": "error", "message": "Message cannot be empty"}, status=400)
 
-            ai_response = chat_with_cromtek(user_message)
+            ai_response = chat_with_gizmotize(user_message)  # <--- updated call
             return JsonResponse({"status": "success", "reply": ai_response}, status=200)
 
         except json.JSONDecodeError:
             return JsonResponse({"status": "error", "message": "Invalid JSON"}, status=400)
 
     return JsonResponse({"status": "error", "message": "Only POST method allowed"}, status=405)
-
-
 
 
 
